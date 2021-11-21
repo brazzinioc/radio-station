@@ -1,0 +1,57 @@
+version: "3"
+services:
+
+  # PHP Service
+  rs_app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: rs_app
+    restart: unless-stopped
+    working_dir: /var/www/
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./src/:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - my-network
+
+
+  # NGINX Service
+  rs_webserver:
+    image: nginx:1
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./src/:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - my-network
+
+
+  # MySQL Service
+  rs_db:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD:
+      MYSQL_RANDOM_ROOT_PASSWORD:
+    volumes:
+      - rs-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  rs-data:
