@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableCategories extends Migration
+class CreateTableSocials extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,19 @@ class CreateTableCategories extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('socials', function (Blueprint $table) {
+            $table->id();
 
-            $table->string('name', 100)->unique();
-            $table->text('description')->nullable();
+            $table->unsignedBigInteger('socialable_id');
+            $table->string('socialable_type');
+
+            $table->string('twitter')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('tiktok')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('whatsapp')->nullable();
+            $table->string('youtube')->nullable();
 
             //Foreign keys
             $table->unsignedBigInteger('created_by');
@@ -38,6 +46,6 @@ class CreateTableCategories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('socials');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableCategories extends Migration
+class CreateTableRadioStations extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,17 @@ class CreateTableCategories extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('radio_stations', function (Blueprint $table) {
+            $table->id();
 
-            $table->string('name', 100)->unique();
-            $table->text('description')->nullable();
+            $table->string('name');
+            $table->string('website')->nullable();
+            $table->string('email')->unique();
+            $table->text('slogan')->nullable();
+            $table->text('about')->nullable();
+            $table->text('mission')->nullable();
+            $table->text('vision')->nullable();
+            $table->text('moral_principles')->nullable();
 
             //Foreign keys
             $table->unsignedBigInteger('created_by');
@@ -38,6 +44,6 @@ class CreateTableCategories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('radio_stations');
     }
 }
