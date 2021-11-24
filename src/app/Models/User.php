@@ -10,6 +10,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 use Spatie\Permission\Traits\HasRoles;
 
+use App\Models\RadioStation;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -21,6 +23,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
+        'about',
         'email',
         'password',
     ];
@@ -42,5 +46,24 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
+
+
+
+    //Relationships
+
+    // With Radio Stations
+    public function radioStationCreated()
+    {
+        return $this->hasMany(RadioStation::class, 'created_by');
+    }
+
+    public function radioStationUpdated()
+    {
+        return $this->hasMany(RadioStation::class, 'updated_by');
+    }
+
 }
