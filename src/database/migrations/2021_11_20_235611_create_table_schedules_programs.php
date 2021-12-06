@@ -20,15 +20,15 @@ class CreateTableSchedulesPrograms extends Migration
             $table->time('hour_end');
 
             //Foreign keys
-            $table->unsignedBigInteger('id_program');
-            $table->unsignedBigInteger('id_schedule');
+            $table->unsignedBigInteger('program_id');
+            $table->unsignedBigInteger('schedule_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('id_program')->references('id')->on('programs');
-            $table->foreign('id_schedule')->references('id')->on('schedules');
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreign('program_id')->references('id')->on('programs')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('schedule_id')->references('id')->on('schedules')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('created_by')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('updated_by')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->timestamps();
             $table->softDeletes();

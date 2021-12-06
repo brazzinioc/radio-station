@@ -17,15 +17,15 @@ class CreateTableDaysSchedules extends Migration
             $table->id();
 
             //Foreign keys
-            $table->unsignedInteger('id_day');
-            $table->unsignedBigInteger('id_schedule');
+            $table->unsignedInteger('day_id');
+            $table->unsignedBigInteger('schedule_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('id_day')->references('id')->on('days');
-            $table->foreign('id_schedule')->references('id')->on('schedules');
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreign('day_id')->references('id')->on('days')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('schedule_id')->references('id')->on('schedules')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('created_by')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('updated_by')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->timestamps();
             $table->softDeletes();

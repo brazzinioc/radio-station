@@ -16,7 +16,7 @@ class CreateTableDays extends Migration
         Schema::create('days', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name', 20);
+            $table->string('name', 20)->unique();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,22 +16,18 @@ class CreateTablePrograms extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name', 255);
+            $table->string('name')->unique();
             $table->text('description');
-            $table->string('slogan', 255)->nullable();
-            $table->string('image', 255)->nullable();
-            $table->string('cover_image', 255)->nullable();
+            $table->string('slogan')->nullable();
 
             //Foreign keys
-            $table->unsignedInteger('id_category');
-            $table->unsignedBigInteger('id_user');
+            $table->unsignedInteger('category_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('id_category')->references('id')->on('categories');
-            $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('created_by')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('updated_by')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->timestamps();
             $table->softDeletes();

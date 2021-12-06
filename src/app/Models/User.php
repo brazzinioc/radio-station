@@ -8,9 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Spatie\Permission\Traits\HasRoles;
+
+use App\Models\RadioStation;
+
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +23,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
+        'about',
         'email',
         'password',
     ];
@@ -40,5 +46,23 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
+
+
+    //Relationships
+
+    // With Radio Stations
+    public function radioStationsCreated()
+    {
+        return $this->hasMany(RadioStation::class, 'created_by');
+    }
+
+    public function radioStationsUpdated()
+    {
+        return $this->hasMany(RadioStation::class, 'updated_by');
+    }
+
 }
