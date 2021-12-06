@@ -52,16 +52,15 @@ class User extends Authenticatable
     ];
 
 
-
     //Relationships
 
     // With Radio Stations
-    public function radioStationCreated()
+    public function radioStationsCreated()
     {
         return $this->hasMany(RadioStation::class, 'created_by');
     }
 
-    public function radioStationUpdated()
+    public function radioStationsUpdated()
     {
         return $this->hasMany(RadioStation::class, 'updated_by');
     }
