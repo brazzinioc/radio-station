@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\{Request, Response};
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
 use App\Http\Requests\{ LoginRequest, RegisterRequest };
 use App\Http\Resources\UserRegisterResource;
@@ -23,7 +25,6 @@ class AuthController extends Controller
 
         // Get User where email is equal to the email in the request, email verified and User is active.
         $user = User::where('email', $request->email)
-                    ->where('email_verified_at', '!=', null)
                     ->where('deleted_at', null)
                     ->first();
 
@@ -61,6 +62,60 @@ class AuthController extends Controller
         // Assign Default Role.
         $user->assignRole('Listener');
 
+        event(new Registered($user));
+
         return new UserRegisterResource($user);
+    }
+
+    /**
+     * Verify user email
+     *
+     * @param  \Illuminate\Http\EmailVerificationRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyEmail(EmailVerificationRequest $request)
+    {
+        try {
+
+            $request->fulfill();
+
+            return response()->json([
+                'message' => 'success'
+            ], Response::HTTP_OK);
+
+        } catch(\Exception $e){
+
+            return response()->json([
+                'message' => 'error'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
+    }
+
+
+    /**
+     * Resend email verification
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function emailVerificationSend(Request $request)
+    {
+        try {
+
+            $request->user()->sendEmailVerificationNotification();
+
+            return response()->json([
+                'message' => 'success'
+            ], Response::HTTP_OK);
+
+        } catch(\Exception $e){
+
+            return response()->json([
+                'message' => 'error'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
+
     }
 }
