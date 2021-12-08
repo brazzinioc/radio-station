@@ -5,6 +5,8 @@ namespace Tests\Feature\Http\Controller\Api;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Registered;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 use App\Models\User;
@@ -95,23 +97,24 @@ class AuthControllerTest extends TestCase
 
 
     /**
-     * Test if the Login route answer back with error message if the email is unverified.
+     * Test if the Login route is working if the email is unverified.
      *
      * @return void
      */
-    public function test_login_answer_back_with_error_with_email_unverified()
+    public function test_login_is_working_with_email_unverified()
     {
         // Create a User with unverified email
-        $user = User::factory()->create(['email_verified_at' => null, 'password' => 'myp@ssw0rd123']);
+        $user = User::factory()->create(['email_verified_at' => null, 'password' => bcrypt('myp@ssw0rd123') ]);
 
         $response = $this->postJson(route('login'), ['email' => $user->email, 'password' => 'myp@ssw0rd123', 'name' => 'spa']);
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED)
+        $response->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
-                'message'
+                'message',
+                'token'
             ])
             ->assertJson([
-                'message' => 'unauthorized'
+                'message' => 'success'
             ]);
     }
 
@@ -272,6 +275,8 @@ class AuthControllerTest extends TestCase
     */
     public function test_register_is_working_with_valid_parameters()
     {
+        Event::fake();
+
         // Run the DatabaseSeeder because User creation use Role table.
         $this->seed();
 
@@ -298,8 +303,11 @@ class AuthControllerTest extends TestCase
                     ]
                 ]);
 
+        Event::assertDispatched(Registered::class);
+
         $this->assertDatabaseHas('users', [ 'id' => $response['data']['id'] , 'name' => $user['name'], 'last_name' => $user['lastName'] , 'email' => $user['email'] ]);
         $this->assertDatabaseHas('model_has_roles', [ 'model_id' => $response['data']['id'], 'model_type' => 'App\Models\User', 'role_id' => 4 ]); // validate if user has Listener role.
+
     }
 
 }

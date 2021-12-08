@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Api\v1\RadioStationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +16,8 @@ use App\Http\Controllers\Api\v1\RadioStationController;
 |
 */
 
-Route::middleware('auth:sanctum')
+
+Route::middleware(['auth:sanctum', 'verified'])
     ->group(function () {
 
         Route::apiResource('radiostations', RadioStationController::class);
