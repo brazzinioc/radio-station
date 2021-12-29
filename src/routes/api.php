@@ -20,6 +20,8 @@ Route::post('login', [ AuthController::class, 'login' ])->name('login');
 
 Route::post('register', [ AuthController::class, 'register' ])->name('register');
 
-Route::get('/email/verify/{id}/{hash}', [ AuthController::class, 'verifyEmail' ])->middleware('auth:sanctum')->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [ AuthController::class, 'verifyEmail' ])->middleware('auth:sanctum')->name('email.verification.verify');
 
-Route::post('/email/verification-notification', [ AuthController::class, 'emailVerificationSend' ] )->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+Route::post('/email/verification-notification', [ AuthController::class, 'emailVerificationSend' ] )->middleware(['auth:sanctum', 'throttle:6,1'])->name('email.verification.send');
+
+Route::put('update-password', [ AuthController::class, 'updatePassword' ])->middleware('auth:sanctum')->name('update.password');

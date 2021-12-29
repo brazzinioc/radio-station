@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
-use App\Http\Requests\{ LoginRequest, RegisterRequest };
+use App\Http\Requests\{ LoginRequest, RegisterRequest, UpdatePasswordRequest };
 use App\Http\Resources\UserRegisterResource;
 
 class AuthController extends Controller
@@ -116,6 +116,16 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
 
         }
+    }
 
+    /**
+     * Update user password
+     * @param \App\Http\Requests\UpdatePasswordRequest  $request
+     * @param \App\Models\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePassword(UpdatePasswordRequest $request, User $user)
+    {
+        //dd($request);
     }
 }

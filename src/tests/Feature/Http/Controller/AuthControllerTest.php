@@ -17,33 +17,32 @@ class AuthControllerTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     /***********************************
-    *          LOGIN USER
-    ************************************/
+     *          LOGIN USER
+     ************************************/
 
 
     /**
      * Test if the Login answer back with error message if the email invalid format
      *
      * @return void
-    */
+     */
     public function test_login_answer_back_with_error_with_invalid_email_format()
     {
-        $response = $this->postJson(route('login'), [ 'email' => 'my_email**000', 'password' => 'myP@ssw0rd01', 'name' => 'spa' ]);
+        $response = $this->postJson(route('login'), ['email' => 'my_email**000', 'password' => 'myP@ssw0rd01', 'name' => 'spa']);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'email',
-                    ]
-                ])
-                ->assertJson([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'email' => [ 'Type a valid email address.' ],
-                    ]
-                ]);
-
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'email',
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'email' => ['Type a valid email address.'],
+                ]
+            ]);
     }
 
 
@@ -58,12 +57,12 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson(route('login'), ['email' => $this->faker->email, 'password' => 'password', 'name' => 'spa']);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED)
-                ->assertJsonStructure([
-                    'message'
-                ])
-                ->assertJson([
-                    'message' => 'unauthorized'
-                ]);
+            ->assertJsonStructure([
+                'message'
+            ])
+            ->assertJson([
+                'message' => 'unauthorized'
+            ]);
     }
 
 
@@ -104,7 +103,7 @@ class AuthControllerTest extends TestCase
     public function test_login_is_working_with_email_unverified()
     {
         // Create a User with unverified email
-        $user = User::factory()->create(['email_verified_at' => null, 'password' => bcrypt('myp@ssw0rd123') ]);
+        $user = User::factory()->create(['email_verified_at' => null, 'password' => bcrypt('myp@ssw0rd123')]);
 
         $response = $this->postJson(route('login'), ['email' => $user->email, 'password' => 'myp@ssw0rd123', 'name' => 'spa']);
 
@@ -143,8 +142,8 @@ class AuthControllerTest extends TestCase
 
 
     /***********************************
-    *          REGISTER USER
-    ************************************/
+     *          REGISTER USER
+     ************************************/
 
 
     /**
@@ -154,29 +153,29 @@ class AuthControllerTest extends TestCase
      */
     public function test_register_answer_back_with_error_with_invalid_parameters()
     {
-        $response = $this->postJson(route('register'), [ 'name' => 'm', 'lastName' => 'l', 'email' => 'my_email', 'password' => 'myp@2*', 'password_confirmation' => 'myp@2*' ]);
+        $response = $this->postJson(route('register'), ['name' => 'm', 'lastName' => 'l', 'email' => 'my_email', 'password' => 'myp@2*', 'password_confirmation' => 'myp@2*']);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'name',
-                        'lastName',
-                        'email',
-                        'password',
-                        'password_confirmation'
-                    ]
-                ])
-                ->assertJson([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'name' => ['The name must be at least 2 characters.'],
-                        'lastName' => ['The last name must be at least 2 characters.'],
-                        'email' => ['Type a valid email address.'],
-                        'password' => ['The password must be at least 8 characters.'],
-                        'password_confirmation' => ['The password confirmation must be at least 8 characters.']
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'name',
+                    'lastName',
+                    'email',
+                    'password',
+                    'password_confirmation'
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'name' => ['The name must be at least 2 characters.'],
+                    'lastName' => ['The last name must be at least 2 characters.'],
+                    'email' => ['Type a valid email address.'],
+                    'password' => ['The password must be at least 8 characters.'],
+                    'password_confirmation' => ['The password confirmation must be at least 8 characters.']
+                ]
+            ]);
     }
 
 
@@ -187,28 +186,28 @@ class AuthControllerTest extends TestCase
      */
     public function test_register_answer_back_with_error_with_empty_parameters()
     {
-        $response = $this->postJson( route('register'), [ 'name' => '', 'lastName' => '', 'email' => '', 'password' => '', 'password_confirmation'] );
+        $response = $this->postJson(route('register'), ['name' => '', 'lastName' => '', 'email' => '', 'password' => '', 'password_confirmation']);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'name',
-                        'lastName',
-                        'email',
-                        'password',
-                    ]
-                ])
-                ->assertJson([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'name' => ['The name is required.'],
-                        'lastName' => ['The last name is required.'],
-                        'email' => ['The email address is required.'],
-                        'password' => ['The password is required.'],
-                        'password_confirmation' => [ 'The password confirmation is required.' ]
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'name',
+                    'lastName',
+                    'email',
+                    'password',
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'name' => ['The name is required.'],
+                    'lastName' => ['The last name is required.'],
+                    'email' => ['The email address is required.'],
+                    'password' => ['The password is required.'],
+                    'password_confirmation' => ['The password confirmation is required.']
+                ]
+            ]);
     }
 
 
@@ -220,21 +219,21 @@ class AuthControllerTest extends TestCase
     public function test_register_answer_back_with_error_with_invalid_email_format()
     {
 
-        $response = $this->postJson( route('register'), [ 'name' => $this->faker->name, 'lastName' => $this->faker->lastName, 'email' => 'my_e$email*001', 'password' => 'myP@ssw0rd345', 'password_confirmation' => 'myP@ssw0rd345' ] );
+        $response = $this->postJson(route('register'), ['name' => $this->faker->name, 'lastName' => $this->faker->lastName, 'email' => 'my_e$email*001', 'password' => 'myP@ssw0rd345', 'password_confirmation' => 'myP@ssw0rd345']);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'email',
-                    ]
-                ])
-                ->assertJson([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'email' => ['Type a valid email address.'],
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'email',
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'email' => ['Type a valid email address.'],
+                ]
+            ]);
     }
 
 
@@ -247,23 +246,23 @@ class AuthControllerTest extends TestCase
     {
         $password = $this->faker->password(8, 255);
 
-        $user = User::factory()->create( [ 'password' => bcrypt($password) ]);
+        $user = User::factory()->create(['password' => bcrypt($password)]);
 
-        $response = $this->postJson( route('register'), [ 'name' => $this->faker->name, 'lastName' => $this->faker->lastName, 'email' => $user->email, 'password' => $password, 'password_confirmation' => $password ] );
+        $response = $this->postJson(route('register'), ['name' => $this->faker->name, 'lastName' => $this->faker->lastName, 'email' => $user->email, 'password' => $password, 'password_confirmation' => $password]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJsonStructure([
-                    'message',
-                    'errors' => [
-                        'email',
-                    ]
-                ])
-                ->assertJson([
-                    'message' => 'The given data was invalid.',
-                    'errors' => [
-                        'email' => ['The email address is already in use.'],
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'email',
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'email' => ['The email address is already in use.'],
+                ]
+            ]);
     }
 
 
@@ -272,7 +271,7 @@ class AuthControllerTest extends TestCase
      * Test if the Register route is working with valid parameters
      *
      * @return void
-    */
+     */
     public function test_register_is_working_with_valid_parameters()
     {
         Event::fake();
@@ -282,32 +281,85 @@ class AuthControllerTest extends TestCase
 
         $password = $this->faker->password(8, 255);
 
-        $user =  [ 'name' => $this->faker->name,
-                    'lastName' => $this->faker->lastName(),
-                    'email' => $this->faker->email(),
-                    'password' => $password,
-                    'password_confirmation' => $password
-                ];
+        $user =  [
+            'name' => $this->faker->name,
+            'lastName' => $this->faker->lastName(),
+            'email' => $this->faker->email(),
+            'password' => $password,
+            'password_confirmation' => $password
+        ];
 
-        $response = $this->postJson( route('register'), $user );
+        $response = $this->postJson(route('register'), $user);
 
         $response->assertStatus(Response::HTTP_CREATED)
-                ->assertJsonStructure([
-                    'data' => [ 'id', 'name', 'lastName', 'email']
-                ])
-                ->assertJson([
-                    'data' => [
-                        'name' => $user['name'],
-                        'lastName' => $user['lastName'],
-                        'email' => $user['email'],
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'data' => ['id', 'name', 'lastName', 'email']
+            ])
+            ->assertJson([
+                'data' => [
+                    'name' => $user['name'],
+                    'lastName' => $user['lastName'],
+                    'email' => $user['email'],
+                ]
+            ]);
 
         Event::assertDispatched(Registered::class);
 
-        $this->assertDatabaseHas('users', [ 'id' => $response['data']['id'] , 'name' => $user['name'], 'last_name' => $user['lastName'] , 'email' => $user['email'] ]);
-        $this->assertDatabaseHas('model_has_roles', [ 'model_id' => $response['data']['id'], 'model_type' => 'App\Models\User', 'role_id' => 4 ]); // validate if user has Listener role.
+        $this->assertDatabaseHas('users', ['id' => $response['data']['id'], 'name' => $user['name'], 'last_name' => $user['lastName'], 'email' => $user['email']]);
+        $this->assertDatabaseHas('model_has_roles', ['model_id' => $response['data']['id'], 'model_type' => 'App\Models\User', 'role_id' => 4]); // validate if user has Listener role.
 
     }
 
+
+
+
+    /***********************************
+     *       UPDATE CURRENT PASSWORD
+     ************************************/
+
+    /**
+     * Test if the Update Current Password route answer back with error with empty parameters.
+     * @return void
+     */
+    public function test_update_current_password_answer_back_with_error_with_empty_parameters()
+    {
+        $user = User::factory()->create();
+
+        $data = [
+            'current_password' => '',
+            'password' => '',
+            'password_confirmation' => ''
+        ];
+
+        $response = $this->actingAs($user)
+                        ->putJson(route('update.password'), $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'current_password',
+                    'password',
+                    'password_confirmation'
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'current_password' => ['The current password is required.'],
+                    'password' => ['The password is required.'],
+                    'password_confirmation' => ['The password confirmation is required.']
+                ]
+            ]);
+    }
+
+
+    /**
+     * Test if the Update Current Password route answer back with error with invalid current password.
+     * @return void
+     */
+    public function test_update_current_password_answer_back_with_error_with_invalid_current_password()
+    {
+
+    }
 }
