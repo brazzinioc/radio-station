@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
 use App\Http\Requests\{ LoginRequest, RegisterRequest, UpdatePasswordRequest };
 use App\Http\Resources\UserRegisterResource;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -124,8 +125,34 @@ class AuthController extends Controller
      * @param \App\Models\User $user
      * @return \Illuminate\Http\Response
      */
-    public function updatePassword(UpdatePasswordRequest $request, User $user)
+    public function updatePassword(UpdatePasswordRequest $request)
     {
-        //dd($request);
+
+        // Get User where email is equal to the email in the request, email verified and User is active.
+        $user = User::where('email', $request->user()->email)
+                ->where('deleted_at', null)
+                ->first();
+
+        if( isset($user) && Hash::check($request->current_password, $user->password) ){
+            if($request->password === $request->password_confirmation){
+
+                $user->update([
+                    'password' => bcrypt($request->password)
+                ]);
+
+                return response()->json([
+                    'message' => 'success'
+                ], Response::HTTP_OK);
+            }
+        }
+
+        // update failed
+        return response()->json([
+            'message' => 'The given data was invalid.',
+            'errors' => [
+                'current_password' => 'The current password is incorrect.'
+            ]
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+
     }
 }

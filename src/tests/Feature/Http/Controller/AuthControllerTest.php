@@ -360,6 +360,33 @@ class AuthControllerTest extends TestCase
      */
     public function test_update_current_password_answer_back_with_error_with_invalid_current_password()
     {
+        $currentPassword = $this->faker->password(8, 255);
+        $newPassword = $this->faker->password(8, 255);
+
+        $user = User::factory()->create(['password' => bcrypt($currentPassword)]);
+
+        $data = [
+            'current_password' => 'myp@ssw0rd',
+            'password' => $newPassword,
+            'password_confirmation' => $newPassword,
+        ];
+
+        $response = $this->actingAs($user)
+                    ->putJson(route('update.password'), $data);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'current_password',
+                ]
+            ])
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'current_password' => 'The current password is incorrect.',
+                ]
+            ]);
 
     }
 }
